@@ -85,6 +85,11 @@ export default function Footer() {
                 {t.footer.linkTerms}
               </Link>
             </li>
+            <li>
+              <Link href="/privacy" className="text-neutral-200 hover:text-[#d2343c]">
+                {t.footer.linkPrivacy}
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
