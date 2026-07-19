@@ -124,10 +124,13 @@ export default function Header({
 
           <a
             href={`tel:+${BUSINESS.phoneTollFreeDial}`}
-            className="hidden text-sm font-semibold text-ink transition hover:text-red xl:inline"
+            className="hidden text-center text-sm font-semibold leading-tight text-ink transition hover:text-red xl:inline-block"
             style={{ fontFamily: "var(--font-mono)" }}
           >
             {BUSINESS.phoneTollFree}
+            <span className="block text-[11px] font-normal text-muted">
+              {BUSINESS.phoneTollFreeDigits}
+            </span>
           </a>
           <Link
             href="/book"

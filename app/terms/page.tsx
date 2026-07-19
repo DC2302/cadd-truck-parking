@@ -35,7 +35,7 @@ export default function TermsPage() {
         <p className="mt-6 border-l-4 border-redsolid bg-white/60 p-4 text-sm leading-relaxed text-panelmuted">
           <strong>Aviso:</strong> Este documento legal está redactado en inglés
           y la versión en inglés es la que rige. Si tienes preguntas sobre
-          cualquier sección antes de aceptar, llámanos al 1-833-4PARKLOT o al
+          cualquier sección antes de aceptar, llámanos al 1-877-607-CADD o al
           (325) 450-7486 y con gusto te lo explicamos.
         </p>
 

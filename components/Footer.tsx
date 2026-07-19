@@ -38,6 +38,9 @@ export default function Footer() {
               style={{ fontFamily: "var(--font-mono)" }}
             >
               {BUSINESS.phoneTollFree}
+              <span className="block text-xs text-neutral-400">
+                {BUSINESS.phoneTollFreeDigits}
+              </span>
             </a>
           </p>
           <p>
