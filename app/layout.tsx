@@ -97,7 +97,7 @@ export default async function RootLayout({
               "@context": "https://schema.org",
               "@type": "ParkingFacility",
               name: BUSINESS.name,
-              telephone: "+1-833-472-7556",
+              telephone: "+1-877-607-2233",
               email: BUSINESS.email,
               address: {
                 "@type": "PostalAddress",

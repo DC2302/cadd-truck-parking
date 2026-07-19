@@ -125,7 +125,7 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     console.error("Failed to save acceptance:", e);
     return NextResponse.json(
-      { error: "We couldn't save your reservation. Please call 1-833-4PARKLOT." },
+      { error: "We couldn't save your reservation. Please call 1-877-607-CADD." },
       { status: 500 },
     );
   }
@@ -173,7 +173,7 @@ export async function POST(req: NextRequest) {
         space: record.space,
         checkoutUrl: null,
         note:
-          "Your acceptance is on file, but we couldn't open card checkout. Pay on arrival or call 1-833-4PARKLOT to pay by card.",
+          "Your acceptance is on file, but we couldn't open card checkout. Pay on arrival or call 1-877-607-CADD to pay by card.",
       });
     }
   }
@@ -219,7 +219,7 @@ async function sendCustomerEmail(rec: AcceptanceRecord) {
         `Términos completos: https://caddtruckparking.com/terms`,
         ``,
         `Ubicación: 4500 East County Road 130, Midland, TX 79706`,
-        `¿Preguntas? 1-833-4PARKLOT (1-833-472-7556) · (325) 450-7486 · caddrealty@gmail.com`,
+        `¿Preguntas? 1-877-607-CADD (1-877-607-2233) · (325) 450-7486 · caddrealty@gmail.com`,
         ``,
         `— El equipo de CADD Truck Parking`,
       ]
@@ -236,7 +236,7 @@ async function sendCustomerEmail(rec: AcceptanceRecord) {
         `Full terms: https://caddtruckparking.com/terms`,
         ``,
         `Find us: 4500 East County Road 130, Midland, TX 79706`,
-        `Questions? 1-833-4PARKLOT (1-833-472-7556) · (325) 450-7486 · caddrealty@gmail.com`,
+        `Questions? 1-877-607-CADD (1-877-607-2233) · (325) 450-7486 · caddrealty@gmail.com`,
         ``,
         `— The CADD Truck Parking team`,
       ];

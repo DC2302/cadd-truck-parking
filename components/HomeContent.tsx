@@ -146,10 +146,13 @@ export default function HomeContent({
             </Link>
             <a
               href={`tel:+${BUSINESS.phoneTollFreeDial}`}
-              className="text-base font-semibold text-muted transition hover:text-red"
+              className="text-center text-base font-semibold leading-tight text-muted transition hover:text-red"
               style={{ fontFamily: "var(--font-mono)" }}
             >
               {BUSINESS.phoneTollFree}
+              <span className="block text-sm font-normal">
+                {BUSINESS.phoneTollFreeDigits}
+              </span>
             </a>
           </div>
 
