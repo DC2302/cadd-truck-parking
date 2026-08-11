@@ -2,3 +2,9 @@ node_modules/
 .next/
 .env*
 .DS_Store
+tsconfig.tsbuildinfo
+
+# Acceptance records hold customer names, emails and IPs — never in git.
+# The folder is kept so local dev has somewhere to write.
+data/*
+!data/.gitkeep
