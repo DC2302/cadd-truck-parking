@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getPlan, getPrice, TERMS_LIST } from "@/lib/pricing";
 import { TERMS_VERSION } from "@/lib/terms";
 import { createPaymentLink, squareConfigured } from "@/lib/square";
+import { isRecurringTerm, createSubscription } from "@/lib/square-subscriptions";
+import { TermId } from "@/lib/pricing";
 import {
   AcceptanceRecord,
   newConfirmationCode,
@@ -33,6 +35,7 @@ export async function POST(req: NextRequest) {
   const term = str("term");
   const paymentMethod = str("paymentMethod");
   const signature = str("signature");
+  const cardToken = str("cardToken");
   const acceptedTerms = body["acceptedTerms"] === true;
   const lang = str("lang") === "es" ? "es" : "en";
 
@@ -108,7 +111,11 @@ export async function POST(req: NextRequest) {
     priceUsd: price!,
     paymentMethod,
     paymentStatus:
-      paymentMethod === "square" ? "sent-to-square" : "pay-on-arrival",
+      paymentMethod === "square"
+        ? isRecurringTerm(term)
+          ? "subscription-invoiced"
+          : "sent-to-square"
+        : "pay-on-arrival",
     signature,
     termsVersion: TERMS_VERSION,
     lang,
@@ -125,7 +132,7 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     console.error("Failed to save acceptance:", e);
     return NextResponse.json(
-      { error: "We couldn't save your reservation. Please call 1-833-4PARKLOT." },
+      { error: "We couldn't save your reservation. Please call 1-877-607-CADD (1-877-607-2233)." },
       { status: 500 },
     );
   }
@@ -150,6 +157,64 @@ export async function POST(req: NextRequest) {
           "Online card payment isn't connected yet — your acceptance is on file. Pay on arrival or call us to pay by card.",
       });
     }
+    // Monthly / Annual → recurring subscription (Square emails the first
+    // invoice; auto-renews when the customer saves a card).
+    if (isRecurringTerm(term)) {
+      const es = lang === "es";
+      const periodWord = es
+        ? term === "annual"
+          ? "año"
+          : "mes"
+        : term === "annual"
+          ? "year"
+          : "month";
+      const amount = `$${price!.toLocaleString("en-US")}`;
+      try {
+        const sub = await createSubscription({
+          plan,
+          term: term as TermId,
+          name,
+          company,
+          email,
+          phone,
+          confirmationCode: record.id,
+          cardToken: cardToken || undefined,
+        });
+        // Option B: card on file → charged now + auto-renews by default.
+        // Option A: no card → Square emails the first invoice.
+        const note = sub.autoCharge
+          ? es
+            ? `Tu tarjeta se cargó ${amount} y tu plan ${planObj!.name} está activo. Se renovará solo cada ${periodWord} hasta que lo canceles. Recibirás un recibo por correo de Square.`
+            : `Your card was charged ${amount} and your ${planObj!.name} plan is active. It renews automatically every ${periodWord} until you cancel. Square will email your receipt.`
+          : es
+            ? `Square te enviará por correo (${email}) tu primera factura del plan ${planObj!.name}. Al pagarla puedes guardar tu tarjeta para que se cobre sola cada ${periodWord}. Cancela cuando quieras.`
+            : `Square will email your first invoice (to ${email}) for the ${planObj!.name} plan. When you pay it you can save your card so it auto-charges each ${periodWord}. Cancel anytime.`;
+        return NextResponse.json({
+          ok: true,
+          confirmation: record.id,
+          space: record.space,
+          checkoutUrl: null,
+          subscription: true,
+          charged: sub.autoCharge,
+          note,
+        });
+      } catch (e) {
+        console.error("Subscription creation failed:", e);
+        if (cardToken) {
+          // Card path failed — ask the customer to retry rather than silently
+          // charging a one-time link that won't set up auto-renewal.
+          return NextResponse.json(
+            {
+              error: es
+                ? "No pudimos procesar esa tarjeta. Revisa el número, la fecha y el código postal, y vuelve a intentarlo."
+                : "We couldn't process that card. Please double-check the number, expiration, and ZIP, then try again.",
+            },
+            { status: 402 },
+          );
+        }
+        // No card provided — fall through to a one-time payment link.
+      }
+    }
     try {
       const termLabel =
         TERMS_LIST.find((t) => t.id === term)?.label ?? term;
@@ -173,7 +238,7 @@ export async function POST(req: NextRequest) {
         space: record.space,
         checkoutUrl: null,
         note:
-          "Your acceptance is on file, but we couldn't open card checkout. Pay on arrival or call 1-833-4PARKLOT to pay by card.",
+          "Your acceptance is on file, but we couldn't open card checkout. Pay on arrival or call 1-877-607-CADD (1-877-607-2233) to pay by card.",
       });
     }
   }
@@ -219,7 +284,7 @@ async function sendCustomerEmail(rec: AcceptanceRecord) {
         `Términos completos: https://caddtruckparking.com/terms`,
         ``,
         `Ubicación: 4500 East County Road 130, Midland, TX 79706`,
-        `¿Preguntas? 1-833-4PARKLOT (1-833-472-7556) · (325) 450-7486 · caddrealty@gmail.com`,
+        `¿Preguntas? 1-877-607-CADD (1-877-607-2233) · caddrealty@gmail.com`,
         ``,
         `— El equipo de CADD Truck Parking`,
       ]
@@ -236,7 +301,7 @@ async function sendCustomerEmail(rec: AcceptanceRecord) {
         `Full terms: https://caddtruckparking.com/terms`,
         ``,
         `Find us: 4500 East County Road 130, Midland, TX 79706`,
-        `Questions? 1-833-4PARKLOT (1-833-472-7556) · (325) 450-7486 · caddrealty@gmail.com`,
+        `Questions? 1-877-607-CADD (1-877-607-2233) · caddrealty@gmail.com`,
         ``,
         `— The CADD Truck Parking team`,
       ];

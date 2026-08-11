@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -20,6 +20,8 @@ import {
   TERMS_EFFECTIVE,
 } from "@/lib/terms";
 import { useLang, fill } from "@/lib/i18n";
+import { SquareCardField, SquareCardHandle } from "@/components/SquareCardField";
+import { trackEvent } from "@/components/Analytics";
 
 type PaymentMethod = "square" | "zelle" | "cashapp" | "cash";
 const PAYMENT_IDS: PaymentMethod[] = ["square", "zelle", "cashapp", "cash"];
@@ -29,6 +31,8 @@ interface Result {
   space?: string;
   checkoutUrl: string | null;
   note?: string;
+  subscription?: boolean;
+  charged?: boolean;
   paymentMethod: PaymentMethod;
 }
 
@@ -56,6 +60,31 @@ export default function BookingWizard() {
   const [accepted, setAccepted] = useState(false);
   const [signature, setSignature] = useState("");
   const [payment, setPayment] = useState<PaymentMethod>("square");
+  const cardRef = useRef<SquareCardHandle>(null);
+  // Square's payment SDK is ~500KB. Payment is the last step of a long page, so
+  // hold it until the step is on its way into view — it's mounted and ready
+  // well before the driver can reach the button.
+  const paymentStepRef = useRef<HTMLDivElement>(null);
+  const [paymentNear, setPaymentNear] = useState(false);
+  useEffect(() => {
+    const el = paymentStepRef.current;
+    if (!el || paymentNear) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setPaymentNear(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setPaymentNear(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "900px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [paymentNear]);
   const [spaceStatuses, setSpaceStatuses] = useState<Record<string, SpaceStatus>>({});
   const [availableCount, setAvailableCount] = useState<number | null>(null);
   const [selectedSpaces, setSelectedSpaces] = useState<string[]>([]);
@@ -107,10 +136,38 @@ export default function BookingWizard() {
     [name, email, phone, accepted, signature, submitting],
   );
 
+  const isRecurringCard =
+    payment === "square" && (termId === "monthly" || termId === "annual");
+
   async function submit() {
     setSubmitting(true);
     setError("");
     try {
+      // Recurring + card: capture the card on file first (Option B).
+      let cardToken: string | undefined;
+      if (isRecurringCard) {
+        // The card field is mounted lazily. If submit somehow lands first, mount
+        // it now and wait for it rather than making the driver click twice.
+        if (!cardRef.current?.ready) {
+          setPaymentNear(true);
+          const readyBy = Date.now() + 8000;
+          while (!cardRef.current?.ready && Date.now() < readyBy) {
+            await new Promise((r) => setTimeout(r, 100));
+          }
+        }
+        if (!cardRef.current) {
+          setError(fill(t.book.errors.network, { phone: BUSINESS.phoneTollFreeDisplay }));
+          setSubmitting(false);
+          return;
+        }
+        try {
+          cardToken = await cardRef.current.tokenize();
+        } catch (e) {
+          setError(e instanceof Error ? e.message : t.book.errors.generic);
+          setSubmitting(false);
+          return;
+        }
+      }
       const res = await fetch("/api/reserve", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -127,6 +184,7 @@ export default function BookingWizard() {
           acceptedTerms: accepted,
           lang,
           spaces: selectedSpaces,
+          cardToken,
         }),
       });
       const json = await res.json();
@@ -138,6 +196,14 @@ export default function BookingWizard() {
         }
         return;
       }
+      trackEvent("reservation_submit", {
+        plan: planId,
+        term: termId,
+        payment_method: payment,
+        value: price,
+        currency: "USD",
+        recurring: isRecurringCard,
+      });
       if (json.checkoutUrl) {
         window.location.href = json.checkoutUrl;
         return;
@@ -147,11 +213,13 @@ export default function BookingWizard() {
         space: json.space || "",
         checkoutUrl: json.checkoutUrl,
         note: json.note,
+        subscription: json.subscription === true,
+        charged: json.charged === true,
         paymentMethod: payment,
       });
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch {
-      setError(fill(t.book.errors.network, { phone: BUSINESS.phoneTollFree }));
+      setError(fill(t.book.errors.network, { phone: BUSINESS.phoneTollFreeDisplay }));
     } finally {
       setSubmitting(false);
     }
@@ -180,10 +248,12 @@ export default function BookingWizard() {
         title={t.book.confirm.paidTitle}
         codeLabel={t.book.confirm.code}
         homeLabel={t.book.confirm.home}
+        reviewAsk={t.book.confirm.reviewAsk}
+        reviewCta={t.book.confirm.reviewCta}
         confirmation={paidCode}
         lines={[
           t.book.confirm.paidLine1,
-          fill(t.book.confirm.paidLine2, { phone: BUSINESS.phoneTollFree }),
+          fill(t.book.confirm.paidLine2, { phone: BUSINESS.phoneTollFreeDisplay }),
         ]}
       />
     );
@@ -195,25 +265,39 @@ export default function BookingWizard() {
       result.paymentMethod !== "square"
         ? t.book.confirm.offline[result.paymentMethod]
         : "";
-    return (
-      <ConfirmationCard
-        title={t.book.confirm.reservedTitle}
-        codeLabel={t.book.confirm.code}
-        homeLabel={t.book.confirm.home}
-        confirmation={result.confirmation}
-        space={result.space}
-        spaceLabel={t.book.confirm.space}
-        lines={[
+    // Recurring plans: show the subscription note, not a one-time "amount due".
+    const lines = result.subscription
+      ? [
+          fill(t.book.confirm.onFile, { version: TERMS_VERSION }),
+          result.note || "",
+        ]
+      : [
           fill(t.book.confirm.onFile, { version: TERMS_VERSION }),
           result.note || offline,
           fill(t.book.confirm.amountDue, {
             amount: formatUSD(price),
             plan: plan.name,
             term: termLabel.toLowerCase(),
-            phone1: BUSINESS.phoneTollFree,
-            phone2: BUSINESS.phoneLocal,
+            phone1: BUSINESS.phoneTollFreeDisplay,
           }),
-        ].filter(Boolean)}
+        ];
+    return (
+      <ConfirmationCard
+        title={
+          result.subscription
+            ? result.charged
+              ? t.book.confirm.paidTitle
+              : t.book.confirm.subscribedTitle
+            : t.book.confirm.reservedTitle
+        }
+        codeLabel={t.book.confirm.code}
+        homeLabel={t.book.confirm.home}
+        reviewAsk={t.book.confirm.reviewAsk}
+        reviewCta={t.book.confirm.reviewCta}
+        confirmation={result.confirmation}
+        space={result.space}
+        spaceLabel={t.book.confirm.space}
+        lines={lines.filter(Boolean)}
       />
     );
   }
@@ -399,7 +483,14 @@ export default function BookingWizard() {
                   {t.book.openFull}
                 </Link>
               </div>
-              <div className="h-72 overflow-y-auto px-5 py-4 text-sm leading-relaxed text-muted">
+              {/* tabIndex: a scrollable region must be reachable by keyboard
+                  (axe: scrollable-region-focusable) */}
+              <div
+                tabIndex={0}
+                role="region"
+                aria-label={t.book.step4}
+                className="h-72 overflow-y-auto px-5 py-4 text-sm leading-relaxed text-muted"
+              >
                 {TERMS_INTRO.map((p, i) => (
                   <p key={i} className="mb-3 font-semibold text-ink">
                     {p}
@@ -462,6 +553,7 @@ export default function BookingWizard() {
           </StepBlock>
 
           {/* STEP 6 — payment */}
+          <div ref={paymentStepRef} />
           <StepBlock n="6" title={t.book.step5}>
             <div className="space-y-3">
               {PAYMENT_IDS.map((id) => {
@@ -500,6 +592,33 @@ export default function BookingWizard() {
               {t.book.payNote}
             </p>
 
+            {isRecurringCard && (
+              <>
+                <div className="mt-4 flex items-start gap-3 rounded-lg border border-red/40 bg-red/5 p-4">
+                  <span aria-hidden className="text-lg leading-none">
+                    ↻
+                  </span>
+                  <p className="text-xs leading-relaxed text-ink">
+                    {fill(t.book.recurringNotice, {
+                      amount: formatUSD(price),
+                      term:
+                        termId === "annual"
+                          ? t.book.recurringYear
+                          : t.book.recurringMonth,
+                    })}
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <p className="mb-2 text-sm font-bold uppercase tracking-wider text-ink">
+                    {t.book.cardLabel}
+                  </p>
+                  {paymentNear && (
+                    <SquareCardField ref={cardRef} onError={setError} />
+                  )}
+                </div>
+              </>
+            )}
+
             {error && (
               <div className="mt-5 border border-red bg-red/10 p-4 text-sm font-semibold text-ink">
                 {error}
@@ -514,7 +633,9 @@ export default function BookingWizard() {
               {submitting
                 ? t.book.submitting
                 : payment === "square"
-                  ? fill(t.book.submitPay, { amount: formatUSD(price) })
+                  ? isRecurringCard
+                    ? fill(t.book.submitSubscribe, { amount: formatUSD(price) })
+                    : fill(t.book.submitPay, { amount: formatUSD(price) })
                   : t.book.submitReserve}
             </button>
             {!accepted && (
@@ -707,6 +828,8 @@ function ConfirmationCard({
   lines,
   codeLabel,
   homeLabel,
+  reviewAsk,
+  reviewCta,
   space,
   spaceLabel,
 }: {
@@ -715,6 +838,8 @@ function ConfirmationCard({
   lines: string[];
   codeLabel: string;
   homeLabel: string;
+  reviewAsk: string;
+  reviewCta: string;
   space?: string;
   spaceLabel?: string;
 }) {
@@ -761,6 +886,18 @@ function ConfirmationCard({
           >
             {homeLabel}
           </Link>
+        </div>
+        {/* Ask the people who actually parked here — not every site visitor. */}
+        <div className="mt-6 border-t border-dashed border-redsolid/40 pt-5 text-center">
+          <p className="text-sm text-panelmuted">{reviewAsk}</p>
+          <a
+            href={BUSINESS.reviewInviteUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-flex min-h-6 items-center gap-2 text-sm font-bold uppercase tracking-widest text-redsolid transition hover:text-panelink"
+          >
+            <span aria-hidden>★★★★★</span> {reviewCta}
+          </a>
         </div>
       </div>
     </div>

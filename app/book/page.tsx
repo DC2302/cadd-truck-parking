@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   title: "Reserve a Space — CADD Truck Parking, Midland TX",
   description:
     "Pick your plan, accept the terms, and pay online or on arrival. Trailblazer from $25/day, IronHauler with unlimited showers from $40/day. Reserva tu espacio.",
+  // Collapses the ?plan=&term= variants into one indexable URL.
+  alternates: { canonical: "/book" },
 };
 
 export default function BookPage() {
