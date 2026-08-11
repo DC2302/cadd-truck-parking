@@ -1,3 +1,4 @@
+import { isAdminKey } from "@/lib/admin-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { PLANS, TermId } from "@/lib/pricing";
 import { ensurePlanVariation } from "@/lib/square-subscriptions";
@@ -12,7 +13,7 @@ export const runtime = "nodejs";
  * GET /api/admin/subscriptions-setup?key=ADMIN_PASSWORD
  */
 export async function GET(req: NextRequest) {
-  if (req.nextUrl.searchParams.get("key") !== process.env.ADMIN_PASSWORD) {
+  if (!isAdminKey(req.nextUrl.searchParams.get("key"))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

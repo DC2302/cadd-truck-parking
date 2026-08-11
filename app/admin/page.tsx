@@ -1,6 +1,8 @@
 import { listAcceptances } from "@/lib/store";
 import { formatUSD } from "@/lib/pricing";
 
+import { isAdminKey } from "@/lib/admin-auth";
+
 export const dynamic = "force-dynamic";
 
 export const metadata = {
@@ -15,7 +17,7 @@ export default async function AdminPage({
 }) {
   const { key } = await searchParams;
   const pass = process.env.ADMIN_PASSWORD;
-  const authorized = !!pass && key === pass;
+  const authorized = isAdminKey(key);
 
   if (!authorized) {
     return (

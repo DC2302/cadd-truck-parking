@@ -1,3 +1,4 @@
+import { isAdminKey } from "@/lib/admin-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { listAcceptances } from "@/lib/store";
 
@@ -10,8 +11,7 @@ function csvEscape(v: string | number): string {
 
 export async function GET(req: NextRequest) {
   const key = req.nextUrl.searchParams.get("key") || "";
-  const pass = process.env.ADMIN_PASSWORD;
-  if (!pass || key !== pass) {
+    if (!isAdminKey(key)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

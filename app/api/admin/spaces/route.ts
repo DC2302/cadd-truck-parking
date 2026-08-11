@@ -1,16 +1,10 @@
+import { authorizeRequest } from "@/lib/admin-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { listSpaces, updateSpace, spaceSummary } from "@/lib/spaces-store";
 
 export const runtime = "nodejs";
 
-function authorized(req: NextRequest): boolean {
-  const key =
-    req.nextUrl.searchParams.get("key") ||
-    req.headers.get("x-admin-key") ||
-    "";
-  const pass = process.env.ADMIN_PASSWORD;
-  return !!pass && key === pass;
-}
+const authorized = (req: Request) => authorizeRequest(req);
 
 /** Full inventory (statuses + who holds what). */
 export async function GET(req: NextRequest) {

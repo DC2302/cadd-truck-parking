@@ -1,5 +1,7 @@
 import AnnouncementComposer from "@/components/AnnouncementComposer";
 
+import { isAdminKey } from "@/lib/admin-auth";
+
 export const dynamic = "force-dynamic";
 
 export const metadata = {
@@ -14,7 +16,7 @@ export default async function AnnouncementsAdminPage({
 }) {
   const { key } = await searchParams;
   const pass = process.env.ADMIN_PASSWORD;
-  const authorized = !!pass && key === pass;
+  const authorized = isAdminKey(key);
 
   if (!authorized) {
     return (

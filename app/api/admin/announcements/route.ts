@@ -8,16 +8,13 @@ import {
 } from "@/lib/announcements";
 import { THEMES, ThemeId, mondayOf } from "@/lib/announcements-types";
 import { draftAnnouncement } from "@/lib/announcement-writer";
+import { authorizeRequest } from "@/lib/admin-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /** Same `?key=` gate the rest of the admin uses. */
-function authorized(req: Request): boolean {
-  const pass = process.env.ADMIN_PASSWORD;
-  if (!pass) return false;
-  return new URL(req.url).searchParams.get("key") === pass;
-}
+const authorized = (req: Request, body?: unknown) => authorizeRequest(req, body);
 
 const denied = () =>
   NextResponse.json({ ok: false, error: "Not authorized." }, { status: 401 });

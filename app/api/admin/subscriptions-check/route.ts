@@ -1,3 +1,4 @@
+import { isAdminKey } from "@/lib/admin-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { cancelSubscription } from "@/lib/square-subscriptions";
 
@@ -22,7 +23,7 @@ function headers() {
  *   GET ?key=ADMIN_PASSWORD&cancel=<id>  → cancel one subscription
  */
 export async function GET(req: NextRequest) {
-  if (req.nextUrl.searchParams.get("key") !== process.env.ADMIN_PASSWORD) {
+  if (!isAdminKey(req.nextUrl.searchParams.get("key"))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
