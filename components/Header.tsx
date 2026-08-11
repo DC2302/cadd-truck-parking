@@ -72,19 +72,19 @@ export default function Header({
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm font-semibold uppercase tracking-wider text-muted lg:flex">
-          <Link href="/#rates" className="transition hover:text-red">
+          <Link href="/#rates" className="inline-flex min-h-6 items-center transition hover:text-red">
             {t.nav.rates}
           </Link>
-          <Link href="/#amenities" className="transition hover:text-red">
+          <Link href="/#amenities" className="inline-flex min-h-6 items-center transition hover:text-red">
             {t.nav.amenities}
           </Link>
-          <Link href="/#location" className="transition hover:text-red">
+          <Link href="/#location" className="inline-flex min-h-6 items-center transition hover:text-red">
             {t.nav.location}
           </Link>
-          <Link href="/blog" className="transition hover:text-red">
+          <Link href="/blog" className="inline-flex min-h-6 items-center transition hover:text-red">
             {t.nav.blog}
           </Link>
-          <Link href="/terms" className="transition hover:text-red">
+          <Link href="/terms" className="inline-flex min-h-6 items-center transition hover:text-red">
             {t.nav.terms}
           </Link>
         </nav>
@@ -92,7 +92,7 @@ export default function Header({
         <div className="flex items-center gap-2 sm:gap-3">
           {/* EN / ES toggle */}
           <div
-            className="flex overflow-hidden rounded-lg border border-line text-xs font-bold"
+            className="flex shrink-0 overflow-hidden rounded-lg border border-line text-xs font-bold"
             role="group"
             aria-label="Language / Idioma"
           >
@@ -122,18 +122,37 @@ export default function Header({
             {isDay ? "☾" : "☀"}
           </button>
 
+          {/* Tap-to-call, always reachable without scrolling. Compact icon on
+              phones (where space is tight), full stacked number from xl up. */}
           <a
             href={`tel:+${BUSINESS.phoneTollFreeDial}`}
-            className="hidden text-sm font-semibold text-ink transition hover:text-red xl:inline"
+            aria-label={`Call ${BUSINESS.phoneTollFreeVanity}`}
+            className="flex size-9 items-center justify-center rounded-lg border border-red text-red transition hover:bg-redsolid hover:text-white xl:hidden"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="size-4"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path d="M6.6 10.8c1.1 2.2 2.9 4 5.1 5.1l1.7-1.7c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V19c0 .6-.4 1-1 1-8.3 0-15-6.7-15-15 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.4 0 .7-.2 1l-1.7 1.8z" />
+            </svg>
+          </a>
+          <a
+            href={`tel:+${BUSINESS.phoneTollFreeDial}`}
+            className="hidden flex-col items-end leading-tight text-ink transition hover:text-red xl:flex"
             style={{ fontFamily: "var(--font-mono)" }}
           >
-            {BUSINESS.phoneTollFree}
+            <span className="text-sm font-bold">{BUSINESS.phoneTollFreeVanity}</span>
+            <span className="text-[11px] text-muted">{BUSINESS.phoneTollFree}</span>
           </a>
+          {/* Short label on phones so the row can't squeeze the other controls */}
           <Link
             href="/book"
-            className="rounded-lg bg-redsolid px-3.5 py-2 text-sm font-bold uppercase tracking-wider text-white shadow-[0_2px_8px_rgba(0,0,0,0.25)] transition hover:bg-reddeep"
+            className="shrink-0 whitespace-nowrap rounded-lg bg-redsolid px-3 py-2 text-xs font-bold uppercase tracking-wider text-white shadow-[0_2px_8px_rgba(0,0,0,0.25)] transition hover:bg-reddeep sm:px-3.5 sm:text-sm"
           >
-            {t.nav.reserve}
+            <span className="sm:hidden">{t.nav.reserveShort}</span>
+            <span className="hidden sm:inline">{t.nav.reserve}</span>
           </Link>
         </div>
       </div>

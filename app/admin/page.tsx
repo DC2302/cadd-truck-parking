@@ -71,6 +71,12 @@ export default async function AdminPage({
         </div>
         <div className="flex gap-3">
         <a
+          href={`/admin/announcements?key=${encodeURIComponent(key!)}`}
+          className="rounded-lg border-2 border-line px-5 py-3 text-sm font-bold uppercase tracking-widest text-ink hover:border-red hover:text-red"
+        >
+          Announcement
+        </a>
+        <a
           href={`/admin/spaces?key=${encodeURIComponent(key!)}`}
           className="rounded-lg border-2 border-line px-5 py-3 text-sm font-bold uppercase tracking-widest text-ink hover:border-red hover:text-red"
         >

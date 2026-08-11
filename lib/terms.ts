@@ -8,8 +8,8 @@
  * which revision each customer agreed to.
  */
 
-export const TERMS_VERSION = "2026-07-05.v1";
-export const TERMS_EFFECTIVE = "July 5, 2026";
+export const TERMS_VERSION = "2026-07-13.v2";
+export const TERMS_EFFECTIVE = "July 13, 2026";
 
 export interface TermsSection {
   id: string;
@@ -245,7 +245,7 @@ export const TERMS_SECTIONS: TermsSection[] = [
   },
 ];
 
-export const TERMS_CONTACT = `Questions about these Terms? Call us at 1-833-4PARKLOT (1-833-472-7556) or (325) 450-7486, email caddrealty@gmail.com, or write to CADD Realty, LLC, 100 Ranger Point, Adkins, TX 78101.`;
+export const TERMS_CONTACT = `Questions about these Terms? Call us at 1-877-607-CADD (1-877-607-2233), email caddrealty@gmail.com, or write to CADD Realty, LLC, 100 Ranger Point, Adkins, TX 78101.`;
 
 /** Plain-text render of the full Terms (for email copies / records). */
 export function termsAsText(): string {

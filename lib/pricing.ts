@@ -92,12 +92,27 @@ export const BUSINESS = {
   established: 2018,
   address: "4500 East County Road 130, Midland, TX 79706",
   addressShort: "4500 E CR 130, Midland, TX 79706",
-  phoneTollFree: "1-833-4PARKLOT",
-  phoneTollFreeDial: "18334727556",
+  phoneTollFree: "1-877-607-2233",
+  phoneTollFreeVanity: "1-877-607-CADD",
+  phoneTollFreeDisplay: "1-877-607-CADD (1-877-607-2233)",
+  phoneTollFreeDial: "18776072233",
   phoneLocal: "(325) 450-7486",
   phoneLocalDial: "13254507486",
   email: "caddrealty@gmail.com",
   noticeAddress: "CADD Realty, LLC, 100 Ranger Point, Adkins, TX 78101",
+  /** Official social profiles. Also emitted as schema.org `sameAs` so search
+   *  engines tie these accounts to the same business entity as the website. */
+  socials: [
+    { name: "Facebook", url: "https://www.facebook.com/CADDtruckparkinglot" },
+    { name: "Instagram", url: "https://www.instagram.com/caddtruckparking/" },
+    { name: "TikTok", url: "https://www.tiktok.com/@cadd.truck.parking" },
+    { name: "YouTube", url: "https://www.youtube.com/@CADD_Truck_Parking" },
+  ],
+  /** Google Business Profile — reading reviews (the public profile panel). */
+  reviewsUrl: "https://g.page/r/CQxlhwSv2VUFEBM",
+  /** Same profile, straight into the write-a-review box. Use this for asks
+   *  (booking confirmation, thank-you email, a QR code in the lounge). */
+  reviewInviteUrl: "https://g.page/r/CQxlhwSv2VUFEBM/review",
   mapsUrl:
     "https://www.google.com/maps/search/?api=1&query=CADD+Truck+Parking+4500+East+County+Road+130+Midland+TX+79706",
 };

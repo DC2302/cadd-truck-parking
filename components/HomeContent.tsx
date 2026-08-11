@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Reveal from "@/components/Reveal";
 import MascotFollow from "@/components/MascotFollow";
 import PricingCards from "@/components/PricingCards";
 import { useLang, fill } from "@/lib/i18n";
+import AnnouncementBanner from "@/components/AnnouncementBanner";
 import { BUSINESS } from "@/lib/pricing";
+import { REVIEWS } from "@/lib/reviews";
 
 /** Word-by-word blur-drop reveal (adapted from the DigitalSerenity snippet).
  *  Pure CSS delays — SSR-safe, replays on language switch. */
@@ -57,6 +59,27 @@ export default function HomeContent({
   const videoRef = useRef<HTMLVideoElement>(null);
   const loopTimer = useRef<number | undefined>(undefined);
   useEffect(() => () => window.clearTimeout(loopTimer.current), []);
+
+  // The hero clip is ~9MB. On a phone out on Permian cell coverage that's the
+  // difference between seeing the page and leaving, so it only loads on a wide
+  // screen with a healthy connection — everyone else gets the poster frame.
+  const [loadVideo, setLoadVideo] = useState(false);
+  useEffect(() => {
+    if (!heroVideo) return;
+    const conn = (
+      navigator as Navigator & {
+        connection?: { saveData?: boolean; effectiveType?: string };
+      }
+    ).connection;
+    const thrifty =
+      conn?.saveData === true ||
+      (!!conn?.effectiveType && !/4g|5g/.test(conn.effectiveType));
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const wide = window.matchMedia("(min-width: 1024px)").matches;
+    if (wide && !thrifty && !reducedMotion) setLoadVideo(true);
+  }, [heroVideo]);
   const handleVideoEnded = () => {
     window.clearTimeout(loopTimer.current);
     loopTimer.current = window.setTimeout(() => {
@@ -72,17 +95,29 @@ export default function HomeContent({
     <>
       {/* ══ HERO ══════════════════════════════════════════════ */}
       <section className="grain relative overflow-hidden bg-surface0">
-        {heroVideo ? (
+        {heroVideo && loadVideo ? (
           <video
             ref={videoRef}
             className="absolute inset-0 h-full w-full object-cover object-[68%_center] opacity-60"
             style={{ filter: "saturate(0.8) brightness(0.9) contrast(1.05)" }}
             src={heroVideo}
             poster={heroPhoto ?? undefined}
+            preload="none"
             autoPlay
             muted
             playsInline
             onEnded={handleVideoEnded}
+            aria-hidden
+          />
+        ) : heroVideo && heroPhoto ? (
+          /* Lightweight stand-in wherever the clip would cost too much */
+          <div
+            className="absolute inset-0 bg-cover object-[68%_center] opacity-60"
+            style={{
+              backgroundImage: `url(${heroPhoto})`,
+              backgroundPosition: "68% center",
+              filter: "saturate(0.8) brightness(0.9) contrast(1.05)",
+            }}
             aria-hidden
           />
         ) : (
@@ -146,10 +181,11 @@ export default function HomeContent({
             </Link>
             <a
               href={`tel:+${BUSINESS.phoneTollFreeDial}`}
-              className="text-base font-semibold text-muted transition hover:text-red"
+              className="flex flex-col leading-tight text-muted transition hover:text-red"
               style={{ fontFamily: "var(--font-mono)" }}
             >
-              {BUSINESS.phoneTollFree}
+              <span className="text-base font-bold text-ink">{BUSINESS.phoneTollFreeVanity}</span>
+              <span className="text-sm">{BUSINESS.phoneTollFree}</span>
             </a>
           </div>
 
@@ -194,6 +230,10 @@ export default function HomeContent({
       </div>
 
       {/* ══ AMENITIES (silver panel) ══════════════════════════ */}
+
+      {/* ── weekly announcement — sits directly under the hero ── */}
+      <AnnouncementBanner />
+
       <section id="amenities" className="bg-panel py-24 text-panelink">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
@@ -237,7 +277,7 @@ export default function HomeContent({
       <section id="rates" className="grain relative overflow-hidden bg-neutral-950 py-24">
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal className="text-center">
-            <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#d2343c]">
+            <p className="text-sm font-bold uppercase tracking-[0.35em] text-[#e8646b]">
               {t.rates.kicker}
             </p>
             <h2
@@ -281,7 +321,7 @@ export default function HomeContent({
               <div className="relative bg-gradient-to-r from-neutral-900 via-neutral-900 to-neutral-950 p-8">
                 <div className="stripe absolute inset-x-0 top-0 h-1" />
                 <p
-                  className="text-2xl font-bold uppercase text-[#d2343c]"
+                  className="text-2xl font-bold uppercase text-[#e8646b]"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   {t.rates.showerCompare.proTitle}
@@ -311,6 +351,7 @@ export default function HomeContent({
                 src={showTruck}
                 alt="CADD Truck Parking show truck"
                 className="card-lift-featured w-full object-cover shadow-[0_30px_80px_-30px_rgba(168,30,36,0.45)]"
+                loading="lazy"
               />
             </Reveal>
             <Reveal delay={120}>
@@ -379,7 +420,7 @@ export default function HomeContent({
       </section>
 
       {/* ══ TESTIMONIALS (dark) ═══════════════════════════════ */}
-      <section className="grain bg-surface0 py-24">
+      <section id="testimonials" className="grain bg-surface0 py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal className="text-center">
             <p className="text-sm font-bold uppercase tracking-[0.35em] text-red">
@@ -393,33 +434,43 @@ export default function HomeContent({
             </h2>
           </Reveal>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
-            {t.testimonials.quotes.map((quote, i) => (
-              <Reveal key={i} delay={i * 100}>
+            {REVIEWS.map((r, i) => (
+              <Reveal key={r.name} delay={i * 100}>
                 <figure className="card-lift flex h-full flex-col border border-line bg-surface1 p-7">
-                  <p
-                    className="text-6xl leading-none text-red"
-                    style={{ fontFamily: "var(--font-display)" }}
+                  <div
+                    className="text-lg tracking-[0.2em] text-red"
+                    aria-label={`${r.stars} out of 5 stars`}
                   >
-                    "
-                  </p>
-                  <blockquote className="flex-1 text-lg leading-relaxed text-ink">
-                    {quote}
+                    {"★".repeat(r.stars)}
+                  </div>
+                  <blockquote className="mt-4 flex-1 leading-relaxed text-ink">
+                    {r.text}
                   </blockquote>
                   <figcaption
                     className="mt-5 text-xs uppercase tracking-widest text-muted"
                     style={{ fontFamily: "var(--font-mono)" }}
                   >
-                    — {t.testimonials.who}
+                    — {r.name} · {t.testimonials.who}
                   </figcaption>
                 </figure>
               </Reveal>
             ))}
           </div>
+          <Reveal className="mt-10 text-center">
+            <a
+              href={BUSINESS.reviewsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-6 items-center text-sm font-bold uppercase tracking-widest text-red hover:text-ink"
+            >
+              {t.testimonials.readAll} ↗
+            </a>
+          </Reveal>
         </div>
       </section>
 
       {/* ══ FAQ ═══════════════════════════════════════════════ */}
-      <section className="relative bg-surface1 py-24">
+      <section id="faq" className="relative bg-surface1 py-24">
         {/* mascot with the headset — follows the visitor's mouse */}
         <MascotFollow
           mode="follow"
@@ -448,6 +499,7 @@ export default function HomeContent({
                 src={mascot}
                 alt=""
                 aria-hidden
+                loading="lazy"
                 className="mx-auto mt-6 h-36 w-auto"
               />
             )}
@@ -518,23 +570,32 @@ export default function HomeContent({
                 {t.location.directions}
               </a>
               <a
-                href={`tel:+${BUSINESS.phoneLocalDial}`}
+                href={`tel:+${BUSINESS.phoneTollFreeDial}`}
                 className="rounded-lg border-2 border-panelink px-6 py-3.5 text-sm font-bold uppercase tracking-widest text-panelink transition hover:border-redsolid hover:text-redsolid"
               >
-                {fill(t.location.call, { phone: BUSINESS.phoneLocal })}
+                {fill(t.location.call, { phone: BUSINESS.phoneTollFreeVanity })}
               </a>
             </div>
           </Reveal>
           <Reveal delay={120}>
-            <div className="card-lift-featured overflow-hidden">
-              <iframe
-                title="Map to CADD Truck Parking"
-                src="https://www.google.com/maps?q=4500+East+County+Road+130,+Midland,+TX+79706&output=embed"
-                className="h-96 w-full"
+            <a
+              href={BUSINESS.mapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open CADD Truck Parking in Google Maps for directions"
+              className="card-lift-featured group relative block overflow-hidden"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/brand/aerial-lot.jpg"
+                alt="Aerial view of CADD Truck Parking at 4500 E County Road 130, Midland TX"
+                className="w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                 loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
               />
-            </div>
+              <span className="absolute left-4 top-4 rounded-lg bg-white px-4 py-2 text-sm font-bold text-[#1a73e8] shadow-[0_2px_10px_rgba(0,0,0,0.35)] transition group-hover:shadow-[0_4px_16px_rgba(0,0,0,0.45)]">
+                {t.location.openMaps} ↗
+              </span>
+            </a>
           </Reveal>
         </div>
       </section>

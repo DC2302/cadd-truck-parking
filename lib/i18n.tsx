@@ -23,7 +23,7 @@ export type Lang = "en" | "es";
 /* ────────────────────────────────────────────────────────────── */
 
 const en = {
-  nav: { rates: "Rates", amenities: "Amenities", location: "Location", blog: "Driver's Log", terms: "Terms", reserve: "Reserve a Space" },
+  nav: { rates: "Rates", amenities: "Amenities", location: "Location", blog: "Driver's Log", terms: "Terms", reserve: "Reserve a Space", reserveShort: "Reserve" },
   hero: {
     kicker: "Est. 2018 · Midland, Texas · Permian Basin",
     line1: "Park it.",
@@ -110,12 +110,8 @@ const en = {
   testimonials: {
     kicker: "From The CB",
     title: "Drivers talk.",
-    who: "Verified driver review",
-    quotes: [
-      "Reasonable pricing with onsite showers and laundry machines. Everything a driver actually needs.",
-      "The place is very clean and very well kept up.",
-      "Great amenities — shower, lounge, and air pumps to fill tires before heading out.",
-    ],
+    who: "Google review",
+    readAll: "Read all our Google reviews",
   },
   faq: {
     kicker: "Good To Know",
@@ -127,20 +123,29 @@ const en = {
       { q: "How do I pay for showers, laundry, and vending?", a: "Showers, laundry, vending, and the pre-trip stations all take coins or in-app payment through PayRange — no change machine needed. PayRange purchases even earn points toward free laundry days and showers." },
       { q: "Are pets allowed?", a: "Yes — pets are welcome as long as they're leashed and attended at all times. Please bring your own waste bags and use the trash cans." },
       { q: "Is there a mechanic on site?", a: "We don't employ a mechanic, but plenty of local technicians serve our customers — several offer discounts for CADD parkers. Their cards are in the lounge, and most parts vendors deliver right to the lot. There are also 5 truck fuel stations within a 3-mile radius." },
-      { q: "Do you offer group or fleet rates?", a: "Yes! We offer special pricing on group parking passes for fleets. Call 1-877-607-2233 and ask about group options." },
+      { q: "Do you offer group or fleet rates?", a: "Yes! We offer special pricing on group parking passes for fleets. Call 1-877-607-CADD (1-877-607-2233) and ask about group options." },
     ],
   },
   location: {
     kicker: "Location",
     title: "Easy off the highway. Right in the Basin.",
-    desc: "Minutes from the loop, positioned for Permian Basin routes. Lot access around the clock, every day of the year.",
+    desc: "Just off Interstate 20 at Exit 138 and minutes from State Highway 158 — positioned for Permian Basin routes. Lot access around the clock, every day of the year.",
     directions: "Get Directions",
     call: "Call {phone}",
+    openMaps: "Open in Maps",
   },
   cta: {
     title: "Your space is waiting.",
     sub: "Reserve online in under two minutes. Accept the terms, pick your plan, and your space is ready when you are.",
     btn: "Reserve a Space Now",
+  },
+  notFound: {
+    kicker: "Wrong turn",
+    title: "That page moved.",
+    body: "We rebuilt the site, so some old links no longer exist. Here's where you probably wanted to go.",
+    home: "Back to Home",
+    book: "Reserve a Space",
+    call: "Call us",
   },
   chat: {
     title: "Big D — CADD Assistant",
@@ -153,7 +158,7 @@ const en = {
     chips: ["What are your rates?", "Tell me about the showers", "How do I book a space?", "Where are you located?"],
     bookBtn: "Reserve a space",
     termsBtn: "Read the Terms",
-    callBtn: "Call 1-877-607-2233",
+    callBtn: "Call 1-877-607-CADD",
     disclaimer: "Never share card numbers in chat — payment happens on the secure form.",
     error: "Hmm, I couldn't connect. Give it another try or call 1-877-607-2233.",
     thinking: "Big D is typing…",
@@ -178,7 +183,7 @@ const en = {
       note: "Green spaces are open — tap up to 4 to pick exactly where you park. Skip this step and we'll assign you the best open space automatically.",
       selected: "Selected:",
       none: "No spaces picked — we'll auto-assign yours",
-      full: "All numbered spaces are taken right now — submit your reservation and the office will assign you a space as one frees up, or call 1-877-607-2233.",
+      full: "All numbered spaces are taken right now — submit your reservation and the office will assign you a space as one frees up, or call 1-877-607-CADD (1-877-607-2233).",
       fleetNote: "Need more than 4 trucks? Call for fleet rates.",
     },
     step1: "Choose your plan",
@@ -211,7 +216,13 @@ const en = {
     payNote: "Whichever way you pay, your acceptance of the terms is recorded the moment you reserve — so drivers paying by Zelle, Cash App, or cash are covered too.",
     submitPay: "Accept Terms & Pay {amount}",
     submitReserve: "Accept Terms & Reserve",
+    submitSubscribe: "Pay {amount} & Start Auto-Renewing Plan",
     submitting: "Working…",
+    cardLabel: "Card details",
+    recurringNotice:
+      "This plan renews automatically. Your card is charged {amount} today and then every {term} until you cancel — no invoices to chase. Enter your card below to start.",
+    recurringMonth: "month",
+    recurringYear: "year",
     mustAccept: "Check the acceptance box and sign to continue.",
     ticket: {
       draft: "★ Parking Permit — Draft ★",
@@ -234,11 +245,14 @@ const en = {
       paidLine1: "Thanks for parking with CADD. We've got your signed terms and your payment.",
       paidLine2: "We'll reach out at the contact info you provided with your space number and gate details. Questions? Call {phone}.",
       reservedTitle: "Terms accepted — reservation on file.",
+      subscribedTitle: "You're set up — check your email for the invoice.",
       onFile: "Your acceptance of the Terms & Conditions (version {version}) is documented and on file — that part is done, no matter how you pay.",
-      amountDue: "Amount due: {amount} — {plan}, {term}. Questions? {phone1} or {phone2}.",
+      amountDue: "Amount due: {amount} — {plan}, {term}. Questions? {phone1}.",
       code: "Confirmation code",
       space: "Your assigned space",
       home: "Back to Home",
+      reviewAsk: "Parked with us before? A quick review helps other drivers find the lot.",
+      reviewCta: "Leave a Google review",
       offline: {
         zelle: "Send your payment with Zelle to Daniel Sanchez at 325-450-7486 and put your confirmation code in the memo — your space locks in when it lands.",
         cashapp: "Send your payment on Cash App to $dc23cadd and put your confirmation code in the note — your space locks in when it lands.",
@@ -253,7 +267,7 @@ const en = {
 };
 
 const es: typeof en = {
-  nav: { rates: "Tarifas", amenities: "Servicios", location: "Ubicación", blog: "Bitácora", terms: "Términos", reserve: "Reserva tu Espacio" },
+  nav: { rates: "Tarifas", amenities: "Servicios", location: "Ubicación", blog: "Bitácora", terms: "Términos", reserve: "Reserva tu Espacio", reserveShort: "Reservar" },
   hero: {
     kicker: "Desde 2018 · Midland, Texas · Cuenca Pérmica",
     line1: "Estaciónalo.",
@@ -340,12 +354,8 @@ const es: typeof en = {
   testimonials: {
     kicker: "Del Radio",
     title: "Los choferes hablan.",
-    who: "Reseña verificada de chofer",
-    quotes: [
-      "Precios razonables con regaderas y lavandería en el mismo patio. Todo lo que un chofer de verdad necesita.",
-      "El lugar está muy limpio y muy bien cuidado.",
-      "Muy buenos servicios — regadera, sala de descanso y aire para las llantas antes de salir.",
-    ],
+    who: "Reseña de Google",
+    readAll: "Lee todas nuestras reseñas de Google",
   },
   faq: {
     kicker: "Bueno Saberlo",
@@ -357,20 +367,29 @@ const es: typeof en = {
       { q: "¿Cómo pago las regaderas, lavandería y máquinas?", a: "Las regaderas, lavandería, máquinas expendedoras y estaciones de aire aceptan monedas o pago desde la app PayRange — no necesitas máquina de cambio. Además, con PayRange acumulas puntos para lavadas y regaderas gratis." },
       { q: "¿Se permiten mascotas?", a: "Sí — las mascotas son bienvenidas siempre que traigan correa y estén acompañadas en todo momento. Trae tus propias bolsitas y usa los botes de basura." },
       { q: "¿Hay mecánico en el patio?", a: "No tenemos mecánico de planta, pero muchos técnicos locales atienden a nuestros clientes — varios dan descuento a los que se estacionan en CADD. Sus tarjetas están en la sala, y la mayoría de las refaccionarias entregan directo al patio. También hay 5 gasolineras de diésel en un radio de 3 millas." },
-      { q: "¿Tienen tarifas de grupo o flotilla?", a: "¡Sí! Ofrecemos precios especiales en pases de grupo para flotillas. Llama al 1-877-607-2233 y pregunta por las opciones de grupo." },
+      { q: "¿Tienen tarifas de grupo o flotilla?", a: "¡Sí! Ofrecemos precios especiales en pases de grupo para flotillas. Llama al 1-877-607-CADD (1-877-607-2233) y pregunta por las opciones de grupo." },
     ],
   },
   location: {
     kicker: "Ubicación",
     title: "Saliendo de la carretera. En plena Cuenca.",
-    desc: "A minutos del loop, bien ubicado para las rutas de la Cuenca Pérmica. Acceso al patio las 24 horas, todos los días del año.",
+    desc: "Saliendo de la Interestatal 20 por la salida 138 y a minutos de la carretera estatal 158 — bien ubicado para las rutas de la Cuenca Pérmica. Acceso al patio las 24 horas, todos los días del año.",
     directions: "Cómo Llegar",
     call: "Llama al {phone}",
+    openMaps: "Abrir en Maps",
   },
   cta: {
     title: "Tu espacio te espera.",
     sub: "Reserva en línea en menos de dos minutos. Acepta los términos, elige tu plan, y tu espacio te espera.",
     btn: "Reservar Ahora",
+  },
+  notFound: {
+    kicker: "Vuelta equivocada",
+    title: "Esa página se movió.",
+    body: "Reconstruimos el sitio, así que algunos enlaces antiguos ya no existen. Aquí está lo que probablemente buscabas.",
+    home: "Volver al Inicio",
+    book: "Reserva tu Espacio",
+    call: "Llámanos",
   },
   chat: {
     title: "Big D — Asistente CADD",
@@ -383,7 +402,7 @@ const es: typeof en = {
     chips: ["¿Cuáles son las tarifas?", "Cuéntame de las regaderas", "¿Cómo reservo un espacio?", "¿Dónde están ubicados?"],
     bookBtn: "Reservar un espacio",
     termsBtn: "Leer los Términos",
-    callBtn: "Llamar al 1-877-607-2233",
+    callBtn: "Llamar al 1-877-607-CADD",
     disclaimer: "Nunca compartas números de tarjeta en el chat — el pago se hace en el formulario seguro.",
     error: "Mmm, no pude conectar. Inténtalo de nuevo o llama al 1-877-607-2233.",
     thinking: "Big D está escribiendo…",
@@ -408,7 +427,7 @@ const es: typeof en = {
       note: "Los espacios verdes están libres — toca hasta 4 para elegir exactamente dónde estacionas. Si te saltas este paso, te asignamos el mejor espacio disponible automáticamente.",
       selected: "Seleccionados:",
       none: "Sin espacios elegidos — te asignamos uno automáticamente",
-      full: "Todos los espacios numerados están ocupados por ahora — envía tu reservación y la oficina te asigna un espacio en cuanto se libere, o llama al 1-877-607-2233.",
+      full: "Todos los espacios numerados están ocupados por ahora — envía tu reservación y la oficina te asigna un espacio en cuanto se libere, o llama al 1-877-607-CADD (1-877-607-2233).",
       fleetNote: "¿Necesitas más de 4 tráileres? Llama para tarifas de flotilla.",
     },
     step1: "Elige tu plan",
@@ -441,7 +460,13 @@ const es: typeof en = {
     payNote: "Pagues como pagues, tu aceptación de los términos queda registrada en el momento en que reservas — así los choferes que pagan con Zelle, Cash App o efectivo también quedan cubiertos.",
     submitPay: "Aceptar Términos y Pagar {amount}",
     submitReserve: "Aceptar Términos y Reservar",
+    submitSubscribe: "Pagar {amount} e Iniciar Plan Automático",
     submitting: "Procesando…",
+    cardLabel: "Datos de la tarjeta",
+    recurringNotice:
+      "Este plan se renueva automáticamente. Tu tarjeta se cobra {amount} hoy y luego cada {term} hasta que canceles — sin facturas que perseguir. Ingresa tu tarjeta abajo para empezar.",
+    recurringMonth: "mes",
+    recurringYear: "año",
     mustAccept: "Marca la casilla de aceptación y firma para continuar.",
     ticket: {
       draft: "★ Permiso de Estacionamiento — Borrador ★",
@@ -464,11 +489,14 @@ const es: typeof en = {
       paidLine1: "Gracias por estacionar con CADD. Ya tenemos tus términos firmados y tu pago.",
       paidLine2: "Te contactaremos a los datos que nos diste con tu número de espacio y los detalles del portón. ¿Preguntas? Llama al {phone}.",
       reservedTitle: "Términos aceptados — reservación registrada.",
+      subscribedTitle: "Todo listo — revisa tu correo para la factura.",
       onFile: "Tu aceptación de los Términos y Condiciones (versión {version}) quedó documentada y archivada — esa parte ya está, sin importar cómo pagues.",
-      amountDue: "Monto a pagar: {amount} — {plan}, {term}. ¿Preguntas? {phone1} o {phone2}.",
+      amountDue: "Monto a pagar: {amount} — {plan}, {term}. ¿Preguntas? {phone1}.",
       code: "Código de confirmación",
       space: "Tu espacio asignado",
       home: "Volver al Inicio",
+      reviewAsk: "¿Ya te has quedado con nosotros? Una reseña rápida ayuda a que otros choferes encuentren el patio.",
+      reviewCta: "Deja una reseña en Google",
       offline: {
         zelle: "Envía tu pago por Zelle a Daniel Sanchez al 325-450-7486 y pon tu código de confirmación en la nota — tu espacio queda apartado en cuanto llegue.",
         cashapp: "Envía tu pago por Cash App a $dc23cadd y pon tu código de confirmación en la nota — tu espacio queda apartado en cuanto llegue.",

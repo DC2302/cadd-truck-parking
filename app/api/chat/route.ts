@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
         ? `LIVE AVAILABILITY RIGHT NOW: ${s.truckAvailable} of ${s.truckTotal} truck spaces open` +
           (s.nextSpace ? ` (next space to be assigned: #${s.nextSpace})` : "") +
           `; ${s.rvAvailable} RV pads open. A specific space number is auto-assigned the moment a reservation is made.`
-        : `LIVE AVAILABILITY RIGHT NOW: all numbered truck spaces show taken in the inventory (${s.rvAvailable} RV pads open). Be upfront that the lot is running full; suggest calling ${"1-833-4PARKLOT"} to check for an opening — and note they can still submit a reservation and the office will assign a space as soon as one frees up.`;
+        : `LIVE AVAILABILITY RIGHT NOW: all numbered truck spaces show taken in the inventory (${s.rvAvailable} RV pads open). Be upfront that the lot is running full; suggest calling ${"1-877-607-CADD (1-877-607-2233)"} to check for an opening — and note they can still submit a reservation and the office will assign a space as soon as one frees up.`;
   } catch (e) {
     console.error("availability lookup failed", e);
   }

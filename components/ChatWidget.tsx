@@ -112,7 +112,13 @@ export default function ChatWidget() {
           </div>
 
           {/* messages */}
-          <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto px-3 py-4">
+          <div
+            ref={listRef}
+            tabIndex={0}
+            role="log"
+            aria-label={t.chat.title}
+            className="flex-1 space-y-3 overflow-y-auto px-3 py-4"
+          >
             <Bubble role="assistant">{t.chat.greeting}</Bubble>
 
             {messages.map((m, i) =>

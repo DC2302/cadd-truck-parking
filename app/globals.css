@@ -14,7 +14,10 @@
   --color-line: #2e3138; /* borders */
   --color-ink: #f1f2f4; /* primary text */
   --color-muted: #9ca1a9; /* secondary text */
-  --color-red: #d2343c; /* brand red (brighter at night for contrast) */
+  /* Brand red for TEXT at night. Small captions in #d2343c only reached 3.2:1
+     on card backgrounds; this clears WCAG AA (4.5:1) on every dark surface.
+     Solid red buttons still use --color-redsolid, so they look unchanged. */
+  --color-red: #e8646b;
   --color-reddeep: #7e1218;
   --color-silver: #c7cbd2;
 
@@ -293,3 +296,13 @@ html.day .grain::before {
 .blog-prose a { color: var(--color-red); text-decoration: underline; }
 .blog-prose blockquote { border-left: 3px solid var(--color-red); padding-left: 1em; margin: 1.2em 0; color: var(--color-ink); font-style: italic; }
 .blog-prose .disclaimer { font-size: 0.8rem; color: var(--color-muted); border-top: 1px solid var(--color-line); padding-top: 0.9em; margin-top: 1.6em; }
+
+/* Announcement ticker — the track holds two copies of the list, so shifting
+   it by exactly half loops with no visible seam. */
+@keyframes cadd-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-cadd-marquee {
+  animation: cadd-marquee 34s linear infinite;
+}

@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import { promises as fs } from "fs";
 import path from "path";
 import HomeContent from "@/components/HomeContent";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 async function exists(rel: string): Promise<boolean> {
   try {
