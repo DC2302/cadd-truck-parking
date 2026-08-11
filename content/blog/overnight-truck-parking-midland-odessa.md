@@ -1,5 +1,6 @@
 ---
 title: Where Can You Actually Park a Semi Overnight in Midland–Odessa?
+seoTitle: Where to Park a Semi Overnight in Midland-Odessa
 date: 2026-07-08
 description: Legal spots, risky spots, and what a night of "free" parking really costs in the Permian Basin. A straight answer from people who park trucks for a living.
 keywords: truck parking Midland TX, overnight semi parking Permian Basin, secure truck parking Odessa, where to park a semi Midland

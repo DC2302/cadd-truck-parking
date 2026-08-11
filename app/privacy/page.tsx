@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy — CADD Truck Parking",
   description:
     "What information CADD Truck Parking collects, why, who we share it with, and the choices you have. Plain language, no legalese.",
+  alternates: { canonical: "/privacy" },
 };
 
 export default function PrivacyPage() {
@@ -34,8 +35,7 @@ export default function PrivacyPage() {
         <p className="mt-6 border-l-4 border-redsolid bg-white/60 p-4 text-sm leading-relaxed text-panelmuted">
           <strong>Aviso:</strong> Esta política está redactada en inglés y la
           versión en inglés es la que rige. Si tienes preguntas sobre cómo
-          manejamos tu información, llámanos al 1-877-607-2233 o al (325)
-          450-7486 y con gusto te lo explicamos.
+          manejamos tu información, llámanos al 1-877-607-CADD (1-877-607-2233) y con gusto te lo explicamos.
         </p>
 
         <div className="mt-8 space-y-4 text-[15px] leading-relaxed">

@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Terms & Conditions — CADD Truck Parking",
   description:
     "Terms & Conditions of Parking & Facility Use for CADD Truck Parking, Midland, Texas.",
+  alternates: { canonical: "/terms" },
 };
 
 export default function TermsPage() {
@@ -35,8 +36,8 @@ export default function TermsPage() {
         <p className="mt-6 border-l-4 border-redsolid bg-white/60 p-4 text-sm leading-relaxed text-panelmuted">
           <strong>Aviso:</strong> Este documento legal está redactado en inglés
           y la versión en inglés es la que rige. Si tienes preguntas sobre
-          cualquier sección antes de aceptar, llámanos al 1-833-4PARKLOT o al
-          (325) 450-7486 y con gusto te lo explicamos.
+          cualquier sección antes de aceptar, llámanos al 1-877-607-CADD (1-877-607-2233) y con gusto te lo
+          explicamos.
         </p>
 
         <div className="mt-8 space-y-4 text-[15px] leading-relaxed">

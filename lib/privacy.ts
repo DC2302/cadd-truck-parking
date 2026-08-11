@@ -96,7 +96,7 @@ export const PRIVACY_SECTIONS: PrivacySection[] = [
     id: "contact",
     title: "11. Contact",
     body: [
-      `CADD Realty, LLC — 4500 East County Road 130, Midland, Texas 79706. Phone: 1-877-607-2233 or (325) 450-7486. Email: caddrealty@gmail.com.`,
+      `CADD Realty, LLC — 4500 East County Road 130, Midland, Texas 79706. Phone: 1-877-607-CADD (1-877-607-2233). Email: caddrealty@gmail.com.`,
     ],
   },
 ];

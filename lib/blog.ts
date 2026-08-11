@@ -17,6 +17,8 @@ import path from "path";
 export type BlogPost = {
   slug: string;
   title: string;
+  /** Optional shorter title for the <title> tag when the headline runs long. */
+  seoTitle?: string;
   date: string;
   description: string;
   keywords: string[];
@@ -39,6 +41,7 @@ function parse(slug: string, raw: string): BlogPost {
   return {
     slug,
     title: meta.title ?? slug,
+    seoTitle: meta.seoTitle || undefined,
     date: meta.date ?? "",
     description: meta.description ?? "",
     keywords: (meta.keywords ?? "").split(",").map((k) => k.trim()).filter(Boolean),

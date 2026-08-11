@@ -15,11 +15,21 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const post = await getPost((await params).slug);
   if (!post) return {};
+  // Brand the title only when it still fits inside Google's ~60-char cut-off.
+  const base = post.seoTitle ?? post.title;
+  const branded = `${base} | CADD`;
   return {
-    title: `${post.title} | CADD Truck Parking`,
+    title: branded.length <= 60 ? branded : base,
     description: post.description,
     keywords: post.keywords,
-    openGraph: { title: post.title, description: post.description, type: "article" },
+    alternates: { canonical: `/blog/${post.slug}` },
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      type: "article",
+      url: `/blog/${post.slug}`,
+      images: [{ url: "/brand/og-image.jpg", width: 1200, height: 630 }],
+    },
   };
 }
 
@@ -64,6 +74,23 @@ export default async function BlogPost({
         })}
         {" · CADD Truck Parking · Midland, TX"}
       </p>
+
+      {/* Someone reading about parking is ready to park — give them the action
+          here, not only after the article. */}
+      <div className="mt-6 flex flex-wrap items-center gap-3 border-y border-line py-4">
+        <Link
+          href="/book"
+          className="rounded-lg bg-redsolid px-5 py-3 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-reddeep"
+        >
+          Reserve a space
+        </Link>
+        <a
+          href={`tel:+${BUSINESS.phoneTollFreeDial}`}
+          className="rounded-lg border-2 border-ink/30 px-5 py-3 text-sm font-bold uppercase tracking-widest text-ink transition hover:border-red hover:text-red"
+        >
+          {BUSINESS.phoneTollFreeVanity}
+        </a>
+      </div>
 
       <article
         className="blog-prose mt-8"

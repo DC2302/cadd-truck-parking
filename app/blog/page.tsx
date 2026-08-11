@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllPosts } from "@/lib/blog";
+import { BUSINESS } from "@/lib/pricing";
 
 export const metadata: Metadata = {
-  title: "Driver's Log — Truck Parking Tips & Permian Basin Trucking | CADD Truck Parking",
+  title: "Driver's Log — Permian Basin Trucking | CADD",
   description:
     "Straight talk for truckers in the Permian Basin: parking, regulations, life on the road, and getting the most out of every stop. From the crew at CADD Truck Parking, Midland TX.",
+  alternates: { canonical: "/blog" },
 };
 
 export default async function BlogIndex() {
@@ -22,6 +24,21 @@ export default async function BlogIndex() {
         Parking, rules of the road, and Permian Basin trucking life — written by the
         people who run the lot, for the people who run the roads.
       </p>
+
+      <div className="mt-6 flex flex-wrap items-center gap-3">
+        <Link
+          href="/book"
+          className="rounded-lg bg-redsolid px-5 py-3 text-sm font-bold uppercase tracking-widest text-white transition hover:bg-reddeep"
+        >
+          Reserve a space
+        </Link>
+        <a
+          href={`tel:+${BUSINESS.phoneTollFreeDial}`}
+          className="rounded-lg border-2 border-ink/30 px-5 py-3 text-sm font-bold uppercase tracking-widest text-ink transition hover:border-red hover:text-red"
+        >
+          {BUSINESS.phoneTollFreeVanity}
+        </a>
+      </div>
 
       <div className="mt-10 space-y-6">
         {posts.length === 0 && (
