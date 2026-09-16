@@ -25,7 +25,7 @@ export type Lang = "en" | "es";
 const en = {
   nav: { rates: "Rates", amenities: "Amenities", location: "Location", blog: "Driver's Log", terms: "Terms", reserve: "Reserve a Space", reserveShort: "Reserve" },
   hero: {
-    kicker: "Est. 2018 · Midland, Texas · Permian Basin",
+    kicker: "24/7 Secure Truck Parking · Midland–Odessa, Texas · Est. 2018",
     line1: "Park it.",
     line2: "Lock it.",
     line3: "Rest easy.",
@@ -118,6 +118,8 @@ const en = {
     title: "Straight answers.",
     fleet: "Fleet manager? We offer group rates for multiple trucks —",
     items: [
+      { q: "Is the lot open 24/7?", a: "Yes. Gate access is 24 hours a day, 7 days a week, with cameras running the whole time — pull in whenever your clock runs out. Reserve online first and your assigned space number is waiting when you arrive." },
+      { q: "How far is CADD from Odessa?", a: "We're on the southeast side of Midland at 4500 E County Road 130 — a straight shot on I-20 from Odessa. Easy off the highway, easy in and out for a full-length rig." },
       { q: "How do I access the restrooms and showers?", a: "The private restroom has a keypad — you get the code as soon as your payment is received. Shower facilities are on the backside of the main building, and IronHauler members get 24/7 access with their own key." },
       { q: "Where can I park my personal vehicle?", a: "There's personal-vehicle parking by the pre-trip station and the exit gate. You can also keep your personal vehicle in your assigned spot, as long as it doesn't sit outside your designated space." },
       { q: "How do I pay for showers, laundry, and vending?", a: "Showers, laundry, vending, and the pre-trip stations all take coins or in-app payment through PayRange — no change machine needed. PayRange purchases even earn points toward free laundry days and showers." },
@@ -269,7 +271,7 @@ const en = {
 const es: typeof en = {
   nav: { rates: "Tarifas", amenities: "Servicios", location: "Ubicación", blog: "Bitácora", terms: "Términos", reserve: "Reserva tu Espacio", reserveShort: "Reservar" },
   hero: {
-    kicker: "Desde 2018 · Midland, Texas · Cuenca Pérmica",
+    kicker: "Estacionamiento Seguro 24/7 · Midland–Odessa, Texas · Desde 2018",
     line1: "Estaciónalo.",
     line2: "Asegúralo.",
     line3: "Descansa.",
@@ -362,6 +364,8 @@ const es: typeof en = {
     title: "Respuestas directas.",
     fleet: "¿Manejas una flotilla? Tenemos tarifas de grupo para varios tráileres —",
     items: [
+      { q: "¿El patio está abierto 24/7?", a: "Sí. El acceso por el portón es las 24 horas, los 7 días, con cámaras grabando todo el tiempo — entra cuando se te acabe el reloj. Reserva en línea primero y tu número de espacio asignado te estará esperando." },
+      { q: "¿Qué tan lejos está CADD de Odessa?", a: "Estamos en el lado sureste de Midland, en 4500 E County Road 130 — derecho por la I-20 desde Odessa. Fácil de entrar y salir con un tráiler completo." },
       { q: "¿Cómo entro a los baños y regaderas?", a: "El baño privado tiene teclado — recibes el código en cuanto se confirma tu pago. Las regaderas están en la parte trasera del edificio principal, y los miembros IronHauler tienen acceso 24/7 con su propia llave." },
       { q: "¿Dónde estaciono mi vehículo personal?", a: "Hay estacionamiento para vehículos personales junto a la estación de aire y el portón de salida. También puedes dejar tu vehículo en tu espacio asignado, siempre que no se salga de tu área designada." },
       { q: "¿Cómo pago las regaderas, lavandería y máquinas?", a: "Las regaderas, lavandería, máquinas expendedoras y estaciones de aire aceptan monedas o pago desde la app PayRange — no necesitas máquina de cambio. Además, con PayRange acumulas puntos para lavadas y regaderas gratis." },

@@ -379,8 +379,26 @@ export default function HomeContent({
         </section>
       )}
 
+      {/* FAQPage schema — mirrors the visible FAQ below, in the active language.
+          Answer engines read it; Google no longer shows FAQ rich results for
+          businesses, so this is for AI visibility, not a SERP feature. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: t.faq.items.map((f) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: { "@type": "Answer", text: f.a },
+            })),
+          }),
+        }}
+      />
+
       {/* ══ GALLERY (silver panel) ════════════════════════════ */}
-      <section className="bg-panel py-24 text-panelink">
+      <section id="gallery" className="bg-panel py-24 text-panelink">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <Reveal>
             <p className="text-sm font-bold uppercase tracking-[0.35em] text-redsolid">

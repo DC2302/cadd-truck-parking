@@ -46,16 +46,16 @@ const lobster = Lobster_Two({
 /* Site-wide defaults. Canonical URLs are set per page (a canonical here would be
    inherited by every child route and point them all at the homepage). */
 export const metadata: Metadata = {
-  title: "Semi-Truck Parking in Midland, TX | CADD Truck Parking",
+  title: "24/7 Secure Truck Parking in Midland, TX | CADD Truck Parking",
   description:
-    "Fenced, gated, 24/7 secure truck parking in the Permian Basin. Assigned spaces, hot showers, laundry & driver lounge. Daily from $25 — reserve online. Estacionamiento seguro para tráileres en Midland, TX.",
+    "Fenced, gated, camera-watched semi-truck parking in Midland–Odessa, TX. Assigned spaces from $25/day, hot showers, laundry & driver lounge. Open 24/7 — reserve online in two minutes.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "https://caddtruckparking.com",
   ),
   openGraph: {
-    title: "CADD Truck Parking — Midland, TX",
+    title: "CADD Truck Parking — 24/7 Secure Truck Parking, Midland TX",
     description:
-      "Secure parking. Real comfort. Built for truckers. Reserve your space in the Permian Basin.",
+      "Secure parking. Real comfort. Built for truckers. Assigned spaces from $25/day in the Permian Basin.",
     type: "website",
     siteName: "CADD Truck Parking",
     locale: "en_US",
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "CADD Truck Parking — Midland, TX",
+    title: "CADD Truck Parking — 24/7 Secure Truck Parking, Midland TX",
     description:
       "Secure parking. Real comfort. Built for truckers. Reserve your space in the Permian Basin.",
     images: ["/brand/og-image.jpg"],
