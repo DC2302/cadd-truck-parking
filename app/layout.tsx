@@ -12,6 +12,10 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
 import Analytics from "@/components/Analytics";
+// Aliased: @/components/Analytics is our GA4 tag. This is Vercel's
+// first-party pageview counter — they run side by side.
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LanguageProvider } from "@/lib/i18n";
 import { BUSINESS } from "@/lib/pricing";
 
@@ -191,6 +195,8 @@ export default async function RootLayout({
       </head>
       <body>
         <Analytics />
+        <VercelAnalytics />
+        <SpeedInsights />
         <LanguageProvider>
           <Header logoNight={brand.logoNight} logoDay={brand.logoDay} />
           <main>{children}</main>
